@@ -13,11 +13,6 @@ td, th {
   text-align: left;
   padding: 8px;
 
-  /** This is the Boss name column (which has no label) */
-  &:nth-child(2) {
-    font-weight: 600;
-    text-decoration: underline #8888;
-  }
   /**  This is the Level column (3rd) */
   &:nth-child(5), &:nth-child(7) {
     text-align: center;
@@ -41,7 +36,13 @@ tr:nth-child(even) td {
   background-color: #1112;
 }
 
-td { border-top: 1px solid #495057; }
+td { 
+  border-top: 1px solid #495057; 
+  &:nth-child(2) {
+    font-weight: 600;
+    text-decoration: underline #8888;
+  }
+}
 
 /** This is the first boss row, the one with the numbers */
 tr[data-raid] {
