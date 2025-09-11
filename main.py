@@ -32,12 +32,13 @@ async def main():
             data.append({
                 'player': row_data[0],
                 'raid': row_data[1],
-                'pals': row_data[2],
-                'strategy': row_data[3],
-                'timer': row_data[4],
-                'submit_date': row_data[5],
-                'reviewer': row_data[6],
-                'review_date': row_data[7],
+                'video_link': row_data[2],
+                'pals': row_data[3],
+                'strategy': row_data[4].split(','),
+                'timer': row_data[5],
+                'submit_date': row_data[6],
+                'reviewer': row_data[7],
+                'review_date': row_data[8],
             })
     
     template = Template(args.template.read_text())
