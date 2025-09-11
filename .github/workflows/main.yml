@@ -1,0 +1,36 @@
+name: "Daily check and update"
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check_and_update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+      - name: Run main.py
+        env:
+          DATA: ${{ secrets.DATA }}
+        run: |
+          python main.py -t template/records.mako -o records.html
+      - name: Commit and push if changed
+        run: |
+          git diff
+          git config --global user.name "Raids"
+          git config --global user.emai "palworld-raids@github.com"
+          git add records.html
+          git commit -m "Updated records" || exit 0
+          git push
