@@ -17,9 +17,9 @@ parser.add_argument("-d", "--data", default=None)
 
 async def main():
     args = parser.parse_args()
-    data = args.data or os.environ["DATA"]
+    data_url = args.data or os.environ["DATA"]
 
-    res = requests.get(args.data)
+    res = requests.get(data_url)
     print(res.text)
 
     data = []
