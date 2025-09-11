@@ -41,7 +41,7 @@ td {
   border-top: 1px solid #495057; 
   /** This is the Boss name column (which has no label) */
   &:nth-child(2) {
-    text-decoration: underline #8888;
+    text-decoration: underline #495057;
   }
 }
 
