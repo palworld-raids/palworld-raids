@@ -38,33 +38,12 @@ tr:nth-child(even) td {
 }
 
 td { 
-  border-top: 1px solid #495057; 
+  border-top: 1px solid #495057;
+
   /** This is the Boss name column (which has no label) */
   &:nth-child(2) {
-    text-decoration: underline #495057;
+    text-decoration: underline #FFFFFF;
   }
-}
-
-/** This is the Raid row, the one with the link */
-tr[data-raid] {
-  background-color: #3331;
-  td { border-top: 1px solid #495057; }
-}
-
-tr[data-raid-info] {
-  background-color: #1112;
-  img {
-    aspect-ratio: 1;
-    width: 1.2em;
-    vertical-align: bottom;
-  }
-}
-
-td[data-strategy] span {
-    border-radius: 8px;
-    padding: 2px;
-    border: 1px solid #8888;
-    background-color: #8884;
 }
 
 tfoot {
