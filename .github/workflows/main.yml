@@ -30,7 +30,7 @@ jobs:
         run: |
           git diff
           git config --global user.name "Raids"
-          git config --global user.emai "palworld-raids@github.com"
+          git config --global user.email "palworld-raids@github.com"
           git add records.html
           git commit -m "Updated records" || exit 0
           git push
