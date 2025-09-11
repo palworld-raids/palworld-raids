@@ -16,6 +16,7 @@ td, th {
   /** This is the Boss name column (which has no label) */
   &:nth-child(2) {
     font-weight: 600;
+    text-decoration: underline #8888;
   }
   /**  This is the Level column (3rd) */
   &:nth-child(5), &:nth-child(7) {
