@@ -5,6 +5,7 @@ import os
 import pathlib
 import requests
 from mako.template import Template
+from mako.lookup import TemplateLookup
 from datetime import datetime
 
 logger = logging.getLogger()
@@ -41,7 +42,10 @@ async def main():
                 'review_date': row_data[8],
             })
     
-    template = Template(args.template.read_text())
+
+    template_lookup = TemplateLookup(directories=['template'])
+
+    template = Template(args.template.read_text(), lookup=template_lookup)
     rendered = template.render(records=data, publish_date=datetime.now().isoformat())
     args.output.write_text(rendered)
 

@@ -62,7 +62,7 @@ tfoot {
     td { text-align: right; }
 }
 </style>
-<table>
+<table id="myTable">
     <thead>
         <tr>                         
             <th>Player</th>
@@ -74,7 +74,7 @@ tfoot {
             <th>Review date</th>
         </tr>
     </thead>
-    
+    <tbody>
     % for record in records:
     % if record['review_date'] and record['reviewer'] and record['timer']:
     <tr>
@@ -92,10 +92,19 @@ tfoot {
     </tr>
     % endif
     % endfor
-
+    </tbody>
     <tfoot>
         <tr>
             <td colspan="8">Last publishing date: ${publish_date}</td>
         </tr>
     </tfoot>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+<script>
+let table = new DataTable('#myTable', {
+    // options
+});
+</script>
