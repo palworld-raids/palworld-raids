@@ -35,7 +35,7 @@ async def main():
                 'raid': row_data[1],
                 'video_link': row_data[2],
                 'pals': row_data[3],
-                'strategy': row_data[4].split(','),
+                'strategy': row_data[4].split(',') if row_data[4] != '' else [],
                 'timer': row_data[5],
                 'submit_date': row_data[6],
                 'reviewer': row_data[7],
