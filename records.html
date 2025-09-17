@@ -3,103 +3,125 @@ table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
-}
 
-th {
-  font-weight: 600;
-}
-
-td, th {
-  text-align: left;
-  padding: 8px;
-
-  
-  /**  This is the Level column (3rd) */
-  &:nth-child(5), &:nth-child(7) {
-    text-align: center;
-  }
-
-  &:nth-child(4) {
-    img {
-      aspect-ratio: 1;
-      width: 1.2em;
-      vertical-align: bottom;
-    }
+  td, th {
+    padding: 8px;
   }
   
-  /**  This is the "HP", "Damage Multiplier" and "Damage Reduction" columns (5th, 6th and 7th respectively) */
-  &:nth-child(5), &:nth-child(6), &:nth-child(8) {
-    text-align: right
-  }
-}
-
-tr:nth-child(even) td {
-  background-color: #1112;
-}
-
-td { 
-  border-top: 1px solid #495057;
-
-  /** This is the Boss name column (which has no label) */
-  &:nth-child(2) {
-    text-decoration: underline #FFFFFF;
+  tr:nth-child(even) td {
+    background-color: #1112;
   }
 
-  /** This is the strategy column */
-  &:nth-child(4) {
-    span {
-      border-radius: 12px;
-      border: 1px solid #495057;
-      background-color: #495057AA;
-      padding: 0.25em 0.5em;
+  tr:nth-child(even) td {
+    background-color: #1112;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  [data-player] {
+    &:is(th) {}
+    &:is(td) {}
+  }
+  [data-game-version] {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {}
+  }
+  [data-raid] {
+    &:is(th) {}
+    &:is(td) {
+      a { text-decoration: underline #FFFFFF; }
+      img {
+        aspect-ratio: 1;
+        width: 1.2em;
+        vertical-align: bottom;
+      }
     }
   }
-}
+  [data-pals] {
+    &:is(th) {}
+    &:is(td) {}
+  }
+  [data-strategy] {
+    &:is(th) {}
+    &:is(td) {
+      span {
+        border-radius: 12px;
+        border: 1px solid #495057;
+        background-color: #495057AA;
+        padding: 0.25em 0.5em;
+      }
+    }
+  }
+  [data-timer] {
+    text-align: center !important;
+    &:is(th) {}
+    &:is(td) {}
+  }
+  [data-submit-date] {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {}
+  }
+  [data-review-date] {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {}
+  }
 
-tfoot {
+  tfoot {
     font-size: 0.6em;
     color: #8888;
-    td { text-align: right; }
+    td { text-align: right !important; }
+  }
 }
+
+
 </style>
 <table id="myTable">
     <thead>
         <tr>                         
-            <th>Player</th>
-            <th>Raid</th>
-            <th>Pals</th>
-            <th>Strategy type</th>
-            <th>Timer</th>
-            <th>Submit date</th>
-            <th>Review date</th>
+            <th data-player>Player</th>
+            <th data-game-version>Version</th>
+            <th data-raid>Raid</th>
+            <th data-pals>Pals</th>
+            <th data-strategy>Strategy type</th>
+            <th data-timer>Timer</th>
+            <th data-submit-date>Submit date</th>
+            <th data-review-date>Review date</th>
         </tr>
     </thead>
     <tbody>
     <tr>
         <td data-player>Raids</td>
+        <td data-game-version>0.6.2</td>
         <td data-raid><a href="https://www.youtube.com/watch?v=nq13UEkJ8xU" target="_blank" noreferrer/>Xenolord Ultra</a></td>
         <td data-pals>Ghangler Ignis (15)</td>
         <td data-strategy>
             <span>Player Damage</span>
         </td>
-        <td>0:02:41</td>
-        <td>9/17/2025 12:33:26</td>
-        <td>9/17/2025 12:39:03</td>
+        <td data-timer>0:02:41</td>
+        <td data-submit-date>9/17/2025 12:33:26</td>
+        <td data-review-date>9/17/2025 12:39:03</td>
     </tr>
     <tr>
         <td data-player>Pedia</td>
+        <td data-game-version>0.6.4</td>
         <td data-raid><a href="https://www.youtube.com/watch?v=5krfHRl2hOQ" target="_blank" noreferrer/>Moon Lord Master</a></td>
         <td data-pals>49 Bellanoir Libero + 1 Orserk (50)</td>
         <td data-strategy>
+            <span>Glitches or Exploits</span>
         </td>
-        <td>0:00:19</td>
-        <td>9/17/2025 12:34:02</td>
-        <td>9/17/2025 12:39:03</td>
+        <td data-timer>0:00:19</td>
+        <td data-submit-date>9/17/2025 12:34:02</td>
+        <td data-review-date>9/17/2025 12:39:03</td>
     </tr>
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="8">Last publishing date: 2025-09-17T17:14:32.443727</td>
+            <td colspan="8">Last publishing date: 2025-09-17T17:45:19.052393</td>
         </tr>
     </tfoot>
 </table>
