@@ -62,7 +62,7 @@ tfoot {
     td { text-align: right; }
 }
 </style>
-<table>
+<table id="myTable">
     <thead>
         <tr>                         
             <th>Player</th>
@@ -74,7 +74,7 @@ tfoot {
             <th>Review date</th>
         </tr>
     </thead>
-    
+    <tbody>
     <tr>
         <td data-player>Ayasu</td>
         <td data-raid><a href="https://www.youtube.com/watch?v=iMUae5Fc17c" target="_blank" noreferrer/>Moon Lord Master (65)</a></td>
@@ -111,10 +111,19 @@ tfoot {
         <td>9/10/2025 19:46:34</td>
         <td>9/10/2025 19:48:20</td>
     </tr>
-
+    </tbody>
     <tfoot>
         <tr>
-            <td colspan="8">Last publishing date: 2025-09-17T16:13:18.804198</td>
+            <td colspan="8">Last publishing date: 2025-09-17T16:36:54.185302</td>
         </tr>
     </tfoot>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+<script>
+let table = new DataTable('#myTable', {
+    // options
+});
+</script>
