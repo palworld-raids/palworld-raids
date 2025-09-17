@@ -40,6 +40,7 @@ async def main():
                 'submit_date': row_data[6],
                 'reviewer': row_data[7],
                 'review_date': row_data[8],
+                'game_version': row_data[9],
             })
     
 
