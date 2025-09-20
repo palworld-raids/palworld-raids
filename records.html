@@ -1,4 +1,6 @@
 <style>
+.dt-container { container-type: inline-size; }
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -6,13 +8,15 @@ table {
 
   td, th {
     padding: 8px;
+    @container (width < 748px) { 
+      text-align: left !important;
+      &:before { 
+        font-weight: 700; 
+      } 
+    }
   }
   
-  tr:nth-child(even) td {
-    background-color: #1112;
-  }
-
-  tr:nth-child(even) td {
+  tr:nth-child(even) {
     background-color: #1112;
   }
 
@@ -22,12 +26,23 @@ table {
 
   [data-player] {
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        grid-area: player;
+        &:before { content: 'Player: ' }
+      }
+    }
   }
   [data-game-version] {
     text-align: right !important;
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: game-version;
+        &:before { content: 'Version: ' }
+      }
+    }
   }
   [data-raid] {
     &:is(th) {}
@@ -38,15 +53,28 @@ table {
         width: 1.2em;
         vertical-align: bottom;
       }
+      @container (width < 748px) {
+        grid-area: raid;
+        &:before { content: 'Raid: ' }
+      }
     }
   }
   [data-pals] {
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        grid-area: pals;
+        &:before { content: 'Pals: ' }
+      }
+    }
   }
   [data-strategy] {
     &:is(th) {}
     &:is(td) {
+      @container (width < 748px) {
+        grid-area: strategy;
+        &:before { content: 'Strategy: ' }
+      }
       span {
         border-radius: 12px;
         border: 1px solid #495057;
@@ -58,23 +86,68 @@ table {
   [data-timer] {
     text-align: center !important;
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: timer;
+        &:before { content: 'Timer: ' }
+      }
+    }
   }
   [data-submit-date] {
     text-align: right !important;
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: submit-date;
+        &:before { content: 'Submit date: ' }
+      }
+    }
   }
   [data-review-date] {
     text-align: right !important;
     &:is(th) {}
-    &:is(td) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: review-date;
+        &:before { content: 'Review date: ' }
+      }
+    }
   }
 
   tfoot {
     font-size: 0.6em;
     color: #8888;
     td { text-align: right !important; }
+  }
+
+  @container (width < 748px) { 
+    &, tbody, td {
+      display: block; 
+    }
+    td {
+
+      padding: 0.125em 0.5em;
+    }
+    tr {
+      background-color: #1112;
+      border: 1px solid white;
+      display: grid;
+      margin-block: 1.5em;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas: 
+        "player player raid raid"
+        "pals pals timer timer"
+        "strategy strategy strategy strategy"
+        "game-version game-version game-version game-version"
+        "submit-date submit-date review-date review-date" 
+      ;
+    }
+    thead, th { 
+      display: none; 
+    }
   }
 }
 
@@ -166,7 +239,7 @@ table {
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="8">Last publishing date: 2025-09-19T23:09:11.676132</td>
+            <td colspan="8">Last publishing date: 2025-09-20T00:45:25.364334</td>
         </tr>
     </tfoot>
 </table>
