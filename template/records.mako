@@ -128,10 +128,9 @@ table {
       display: block; 
     }
     td {
-
       padding: 0.125em 0.5em;
     }
-    tr {
+    tbody tr {
       background-color: #1112;
       border: 1px solid white;
       display: grid;
