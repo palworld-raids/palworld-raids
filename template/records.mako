@@ -80,6 +80,7 @@ table {
         border: 1px solid #495057;
         background-color: #495057AA;
         padding: 0.25em 0.5em;
+        white-space: nowrap;
       }
     }
   }
