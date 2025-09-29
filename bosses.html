@@ -1,336 +1,628 @@
-<!DOCTYPE html>
-<html>
-<head>
+
 <style>
-table {
+  ul[data-raid-list] {
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    list-style-type: none;
+    padding: 0;
 
-  width: 100%;
-  overflow-x: auto;
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
+    li[data-raid] {
+      padding: 8px;
+      display: grid;
+      align-items: center;
+      grid-template-columns: subgrid;
+      grid-template-rows: repeat(3, auto);
+      grid-column: 1 / -1;
+      border: 1px solid grey;
+      gap: 8px;
+      
+      @container (width < 748px) {
 
-th {
-  font-weight: 600;
-}
+      }
 
-td, th {
-  text-align: left;
-  padding: 8px;
+      [data-raid-image] {
+        grid-area: 1 / 1 / 2 / 1;
+        block-size: 38px;
+        inline-size: 38px;
+      }
+      h4[data-raid-name] {
+        align-content: center;
+        margin: 0;
+        grid-area: 1 / 2 / 1 / 2;
+        font-size: larger;
+      }
 
-  /** This is the Boss name column (which has no label) */
-  &:nth-child(2) {
-    font-weight: 600;
-  }
-  /**  This is the Level column (3rd) */
-  &:nth-child(3) {
-    text-align: center;
-  }
+      [data-raid-level] {
+        justify-self: center;
+        grid-area: auto / 1;
+        align-items: center;
+        width: fit-content;
+        height: fit-content;
+        border-radius: 12px;
+        border: 1px solid #495057;
+        background-color: #495057AA;
+        padding: 0.25em 0.5em;
+      }
 
-  &:nth-child(4) {
-    img {
-      aspect-ratio: 1;
-      width: 1.2em;
-      vertical-align: bottom;
+      [data-raid-type] {
+        grid-area: 1 / 3;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: flex-end;
+        list-style-type: none;
+        gap: .25em;
+        padding: 0;
+        li {
+          display: flex;
+          padding: 0;
+          margin: 0;
+          align-items: center;
+          &:not(:first-child)::before {
+            content: '⟩';
+            box-sizing: border-box;
+            padding-bottom: 3px; 
+            height: 24px;
+            margin-right: .25em;
+          }
+          img {
+            block-size: 24px;
+            inline-size: 24px;
+            margin: 0;
+            padding: 0;
+          }
+          span {
+            height: fit-content;
+          }
+        }
+      }
+
+      [data-raid-stats] {
+        grid-area: 2 / 2 / 2 / -1;
+        display: flex;
+        align-items: center;
+        gap: .5em;
+        [data-raid-hp]:before { background: url(https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/546cc1cd-2069-4057-b5ca-1016e51825b4/T_icon_status_00.png?content-type=image%2Fpng) -5px; }
+        [data-raid-damage-increase]:before { background: url(https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/119c686c-bf5f-4cb7-8817-5ad8792af7e6/T_icon_status_02.png?content-type=image%2Fpng) -3px;}
+        [data-raid-damage-reduction]:before { background: url(https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/ed08e82d-1f77-456a-a18a-1b04d332ebbd/T_icon_status_03.png?content-type=image%2Fpng) -4px;}
+      
+        [data-raid-hp],
+        [data-raid-damage-increase],
+        [data-raid-damage-reduction] {
+          & {
+            display: flex;
+            align-items: center;
+          }
+          &:before {
+            content: '';
+            display: block;
+            block-size: 24px;
+            inline-size: 24px;
+          }
+        }
+      }
+
+      [data-raid-info] {
+        grid-area: 3 / 2 / 3 / -1;
+        h5 {
+          margin-top: 1em;
+          margin-bottom: .125em;
+          color: #AAA;
+        }
+        summary {
+          display: list-item;
+          color: #AAA;
+
+        }
+        
+        img[data-raid-type-icon] {
+          block-size: 16px;
+          inline-size: 16px;
+          vertical-align: middle;
+        }
+      }
     }
   }
-  
-  /**  This is the "HP", "Damage Multiplier" and "Damage Reduction" columns (5th, 6th and 7th respectively) */
-  &:nth-child(5), &:nth-child(6), &:nth-child(7) {
-    text-align: right
-  }
-}
-
-/** This is the first boss row, the one with the numbers */
-tr[data-raid] {
-  background-color: #3331;
-  td { border-top: 1px solid #495057; }
-}
-
-tr[data-raid-info] {
-  background-color: #1112;
-  img {
-    aspect-ratio: 1;
-    width: 1.2em;
-    vertical-align: bottom;
-  }
-}
-
-
 </style>
-</head>
-<body>
-
-<table>
-  <tr>
-    <th>Boss</th>
-    <th></th>
-    <th>Level</th>
-    <th>Type</th>
-    <th>HP</th>
-    <th>Damage Multiplier</th>
-    <th>Damage Reduction</th>
-  </tr>
-  <tr data-raid="bellanoir">
-    <td rowspan="2">
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/25c049ed-502e-4bce-9107-49d3e30745ea/bellanoir.webp?content-type=image%2Fwebp" width="50" height="50">
-    </td>
-    <td>Bellanoir</td>
-    <td>30</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-      Dark
-    </td>
-    <td>294,000</td>
-    <td>100%</td>
-    <td>0%</td>
-  </tr>
-  <tr data-raid-info="bellanoir">
-    <td colspan="7">
-      <div><b>Attack Type:</b> <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/> Dark</div>
-      <div><b>Counter Skills:</b> Beam Slicer, Hydro Slicer, Air Blade, Beam Comet, Firefist Breathstorm</div>
-      <div><b>Counter Pals:</b> Jormuntide Ignis, Jetragon, Astegon, Orserk, Shadowbeak, Necromus</div>
-      <div><b>Strategy:</b> Tutorial raid, clearable with basic dragon pals in the level 40+ range.
-    </td>
-  </tr>
-  <tr data-raid="bellanoirlibero">
-    <td rowspan="2">
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4b9f2ec1-e369-4a3c-8fcb-8e26a72cf3c0/libero.webp?content-type=image%2Fwebp" width="50" height="50">
-    </td>
-    <td>Bellanoir Libero</td>
-    <td>50</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-      Dark (Phase 1)
-      <br>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
-      Ice (Phase 2)
-    </td>
-    <td>450,000</td>
-    <td>200%</td>
-    <td>60%</td>
-  </tr>
-  <tr data-raid-info="bellanoirlibero">
-    <td colspan="7">
-      <div>
-        <b>Attack Type:</b> 
+<ul data-raid-list>
+  <li data-raid="bellanoir">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/25c049ed-502e-4bce-9107-49d3e30745ea/bellanoir.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Bellanoir">Bellanoir</h4>
+    <ul data-raid-type="dark">
+      <li>
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="30">30</div>
+    <div data-raid-stats>
+      <div data-raid-hp="294000" title="HP">294,000</div>
+      <div data-raid-damage-increase="1" title="Damage increase">100%</div>
+      <div data-raid-damage-reduction="0" title="Damage reduction">0%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>Tutorial raid, clearable with basic dragon pals in the level 40+ range.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5> 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/> Dark
+      </div>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+          <li>Air Blade</li>
+          <li>Beam Comet</li>
+          <li>Firefist Breathstorm</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Jormuntide Ignis</li>
+          <li>Jetragon</li>
+          <li>Astegon</li>
+          <li>Orserk</li>
+          <li>Shadowbeak</li>
+          <li>Necromus</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="bellanoirlibero">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4b9f2ec1-e369-4a3c-8fcb-8e26a72cf3c0/libero.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Bellanoir Libero">Bellanoir Libero</h4>
+    <ul data-raid-type="dark,ice">
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+      </li>
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="50">50</div>
+    <div data-raid-stats>
+      <div data-raid-hp="450000" title="HP">450,000</div>
+      <div data-raid-damage-increase="2" title="Damage increase">200%</div>
+      <div data-raid-damage-reduction="0.6" title="Damage reduction">60% </div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>At 10% HP it changes element from Dark to Ice, restore 30% HP and gains Ice moves as well as increased stats.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5> 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
         Dark (Phase 1) 
         / 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
         Dark
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
         Ice (Phase 2)
       </div>
-      <div><b>Counter Skills:</b> Beam Slicer, Hydro Slicer, Air Blade, Beam Comet, Firefist Breathstorm</div>
-      <div><b>Counter Pals:</b> Jormuntide Ignis, Jetragon, Astegon, Orserk, Shadowbeak, Necromus</div>
-      <div><b>Strategy:</b> At 30% HP it changes element from Dark to Ice and gains Ice moves as well as increased stats. 
-    </td>
-  </tr>
-  <tr data-raid="bellanoirlibero_ultra">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4b9f2ec1-e369-4a3c-8fcb-8e26a72cf3c0/libero.webp?content-type=image%2Fwebp" width="50" height="50"></td>
-    <td>Bellanoir Libero Ultra</td>
-    <td>50</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-      Dark (Phase 1)
-      <br>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
-      Ice (Phase 2)
-    </td><td>900,000</td>
-    <td>300%</td>
-    <td>75%</td>
-  </tr>
-  <tr data-raid-info="bellanoirlibero_ultra">
-    <td colspan="7">
       <div>
-        <b>Attack Type:</b> 
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+          <li>Air Blade</li>
+          <li>Beam Comet</li>
+          <li>Firefist Breathstorm</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Jormuntide Ignis</li>
+          <li>Jetragon</li>
+          <li>Astegon</li>
+          <li>Orserk</li>
+          <li>Shadowbeak</li>
+          <li>Necromus</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="bellanoirlibero_ultra">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4b9f2ec1-e369-4a3c-8fcb-8e26a72cf3c0/libero.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Bellanoir Libero">Bellanoir Libero (Ultra)</h4>
+    <ul data-raid-type="dark,ice">
+      <li>
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+      </li>
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="50">50</div>
+    <div data-raid-stats>
+      <div data-raid-hp="900000" title="HP">900,000</div>
+      <div data-raid-damage-increase="3" title="Damage increase">300%</div>
+      <div data-raid-damage-reduction="0.75" title="Damage reduction">75%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>At 10% HP it changes element from Dark to Ice, restore 30% HP and gains Ice moves as well as increased stats. </p>
+      </div>
+      <div>
+        <h5>Attack Type</h5> 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
         Dark (Phase 1) 
         / 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
         Dark
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/4d3e8c13-7f3e-487c-810e-298d5731774e/ice.webp?content-type=image%2Fwebp"/>
         Ice (Phase 2)
       </div>
-      <div><b>Counter Skills:</b> Beam Slicer, Hydro Slicer, Air Blade, Beam Comet, Firefist Breathstorm</div>
-      <div><b>Counter Pals:</b> Jormuntide Ignis, Jetragon, Astegon, Orserk, Shadowbeak, Necromus</div>
-      <div><b>Strategy:</b> At 30% HP it changes element from Dark to Ice and gains Ice moves as well as increased stats.
-    </td>
-  </tr>
-  <tr data-raid="blazamutryu">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eef5663d-5524-4166-bfae-b974d5137c1c/T_KingBahamut_Dragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50"></td>
-    <td>Blazamut Ryu</td>
-    <td>55</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-      Dragon
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
-      Fire (Phase 1) 
-      <br>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
-      Electric (Phase 2)
-    </td>
-    <td>512,600</td>
-    <td>200%</td>
-    <td>60%</td>
-  </tr>
-  <tr data-raid-info="blazamutryu">
-    <td colspan="7">
-      <div><b>Attack Type:</b>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+          <li>Air Blade</li>
+          <li>Beam Comet</li>
+          <li>Firefist Breathstorm</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Jormuntide Ignis</li>
+          <li>Jetragon</li>
+          <li>Astegon</li>
+          <li>Orserk</li>
+          <li>Shadowbeak</li>
+          <li>Necromus</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="blazamutryu">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eef5663d-5524-4166-bfae-b974d5137c1c/T_KingBahamut_Dragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Blazamut Ryu">Blazamut Ryu</h4>
+    <ul data-raid-type="dragon,fire,electric">
+      <li>
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-        Dragon 
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
+      </li>
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="55">55</div>
+    <div data-raid-stats>
+      <div data-raid-hp="512600" title="HP">512,600</div>
+      <div data-raid-damage-increase="2" title="Damage increase">200%</div>
+      <div data-raid-damage-reduction="0.6" title="Damage reduction">60%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>Between attacks, charges current target and deals damage on impact.</p>
+        <p>At 10% HP it changes element from Dragon/Fire to Electric, restore 30% HP and gains Electric moves as well as increased stats.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        Dragon 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
         Fire (Phase 1) 
         / 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
         Electric
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
         Dragon 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
         Fire (Phase 2)
       </div>
-      <div><b>Counter Skills:</b> Holy Burst, Curtain Splash, Hydro Slicer, Rockburst, Air Blade, Thalassonic Laser, Trigger Happy</div>
-      <div><b>Counter Pals:</b> Neptilius, Finsider Ignis, Jormuntide, Jormuntide Ignis, Paladius </div>
-      <div><b>Strategy:</b> Between attacks, charges current target and deals damage on impact. At 30% HP, it changes element from Dragon/Fire to Electric and gains Electric moves as well as increased stats.
-    </td>
-  </tr>
-  <tr data-raid="blazamutryu_ultra">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eef5663d-5524-4166-bfae-b974d5137c1c/T_KingBahamut_Dragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50"></td>
-    <td>Blazamut Ryu Ultra</td>
-    <td>55</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-      Dragon
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
-      Fire (Phase 1) 
-      <br>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
-      Electric (Phase 2)
-    </td>
-    <td>1,025,360</td>
-    <td>320%</td>
-    <td>70%</td>
-  </tr>
-  <tr data-raid-info="blazamutryu_ultra">
-    <td colspan="7">
-      <div><b>Attack Type:</b>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Holy Burst</li>
+          <li>Curtain Splash</li>
+          <li>Hydro Slicer</li>
+          <li>Rockburst</li>
+          <li>Air Blade</li>
+          <li>Thalassonic Laser</li>
+          <li>Trigger Happy</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Neptilius</li>
+          <li>Finsider Ignis</li>
+          <li>Jormuntide</li>
+          <li>Jormuntide Ignis</li>
+          <li>Paladius</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="blazamutryu_ultra">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eef5663d-5524-4166-bfae-b974d5137c1c/T_KingBahamut_Dragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Blazamut Ryu (Ultra)">Blazamut Ryu (Ultra)</h4>
+    <ul data-raid-type="dragon,fire,electric">
+      <li>
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-        Dragon 
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
+      </li>
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="55">55</div>
+    <div data-raid-stats>
+      <div data-raid-hp="1025360" title="HP">1,025,360</div>
+      <div data-raid-damage-increase="3.2" title="Damage increase">320%</div>
+      <div data-raid-damage-reduction="0.7" title="Damage reduction">70%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>Between attacks, charges current target and deals damage on impact. </p>
+        <p>At 10% HP it changes element from Dragon/Fire to Electric, restore 30% HP and gains Electric moves as well as increased stats. </p>
+      </div>
+      <div>
+        <h5>Attack Type</h5>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        Dragon 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
         Fire (Phase 1) 
         / 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/bebbc42e-b810-4157-bd50-781f896f92ae/electric.webp?content-type=image%2Fwebp"/>
         Electric
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
         Dragon 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
         Fire (Phase 2)
       </div>
-      <div><b>Counter Skills:</b> Holy Burst, Curtain Splash, Hydro Slicer, Rockburst, Air Blade, Thalassonic Laser, Trigger Happy</div>
-      <div><b>Counter Pals:</b> Neptilius, Finsider Ignis, Jormuntide, Jormuntide Ignis, Paladius</div>
-      <div><b>Strategy:</b> Between attacks, charges current target and deals damage on impact. At 30% HP it changes element from Dragon/Fire to Electric and gains Electric moves as well as increased stats.
-    </td>
-  </tr>
-  <tr data-raid="xenolord">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/fa711866-1e06-492e-81eb-b1660151bd03/T_DarkMechaDragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50"></td>
-    <td>Xenolord</td>
-    <td>60</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-      Dark 
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-      Dragon
-    </td>
-    <td>1,316,00</td>
-    <td>500%</td>
-    <td>65%</td>
-  </tr>
-  <tr data-raid-info="xenolord">
-    <td colspan="7">
-      <div><b>Attack Type:</b> <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-        Dragon 
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Holy Burst</li>
+          <li>Curtain Splash</li>
+          <li>Hydro Slicer</li>
+          <li>Rockburst</li>
+          <li>Air Blade</li>
+          <li>Thalassonic Laser</li>
+          <li>Trigger Happy</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Neptilius</li>
+          <li>Finsider Ignis</li>
+          <li>Jormuntide</li>
+          <li>Jormuntide Ignis</li>
+          <li>Paladius</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="xenolord">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/fa711866-1e06-492e-81eb-b1660151bd03/T_DarkMechaDragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Xenolord">Xenolord</h4>
+    <ul data-raid-type="dragon,dark">
+      <li>
         <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-        Dark</div>
-      <div><b>Counter Skills:</b> Meteorain (Adds), Holy Burst, Absolute Frost, Curtain Splash, Beam Slicer, Hydro Slicer, Blast Cannon, Rockburst, Air Blade, Thalassonic Laser, Trigger Happy, Lightning Streak</div>
-      <div><b>Counter Pals:</b> Neptilius, Bastigor, Orserk, Azurobe, Silvegis</div>
-      <div><b>Strategy:</b> Between attacks, charges current target and deals damage on impact. At 70% HP it calls Xenovaders (Dark Pal) for aid. At 30% HP it calls Xenovaders (Dark Pal) and Xenogard (Dragon Pal) for aid.
-    </td>
-  </tr>
-  <tr data-raid="xenolord_ultra">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/fa711866-1e06-492e-81eb-b1660151bd03/T_DarkMechaDragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50"></td>
-    <td>Xenolord Ultra</td>
-    <td>60</td>
-    <td>
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
-      Dark 
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
-      Dragon
-    </td>
-    <td>1,974,000</td>
-    <td>1300%</td>
-    <td>76%</td>
-  </tr>
-  <tr data-raid-info="xenolord_ultra">
-    <td colspan="7">
-      <div><b>Attack Type:</b> <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="60">60</div>
+    <div data-raid-stats>
+      <div data-raid-hp="1316000" title="HP">1,316,000</div>
+      <div data-raid-damage-increase="5" title="Damage increase">500%</div>
+      <div data-raid-damage-reduction="0.65" title="Damage reduction">65%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>Between attacks, charges current target and deals damage on impact. </p>
+        <p>At 70% HP it calls Xenovaders (Dark Pal) for aid. At 40% HP it calls Xenovaders (Dark Pal) and Xenogard (Dragon Pal) for aid.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5> 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
         Dragon 
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
         Dark
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/6c8692c0-6008-40dd-a0f3-2a3ce46ba021/ground.webp?content-type=image%2Fwebp"/>
+      </div>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Meteorain (Adds)</li>
+          <li>Holy Burst</li>
+          <li>Absolute Frost</li>
+          <li>Curtain Splash</li>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+          <li>Blast Cannon</li>
+          <li>Rockburst</li>
+          <li>Air Blade</li>
+          <li>Thalassonic Laser</li>
+          <li>Trigger Happy</li>
+          <li>Lightning Streak</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Neptilius</li>
+          <li>Bastigor</li>
+          <li>Orserk</li>
+          <li>Azurobe</li>
+          <li>Silvegis</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="xenolord_ultra">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/fa711866-1e06-492e-81eb-b1660151bd03/T_DarkMechaDragon_icon_normal.webp?content-type=image%2Fwebp" width="50" height="50">
+    <h4 data-raid-name="Xenolord (Ultra)">Xenolord (Ultra)</h4>
+    <ul data-raid-type="dragon,dark">
+      <li>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+      </li>
+    </ul>
+    <div data-raid-level="60">60</div>
+    <div data-raid-stats>
+      <div data-raid-hp="1974000" title="HP">1,974,000</div>
+      <div data-raid-damage-increase="13" title="Damage increase">1300%</div>
+      <div data-raid-damage-reduction="0.76" title="Damage reduction">76%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>Between attacks, charges current target and deals damage on impact. </p>
+        <p>At 70% HP it calls Xenovaders (Dark Pal) for aid. At 45% HP it calls Xenovaders (Dark Pal) and Xenogard (Dragon Pal) for aid. When it reaches 30% HP, it calls a LOT of Xenovaders and Xenogards for aid.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5> 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/a2086d76-9adc-4430-a61c-aa73443320f7/dragon.webp?content-type=image%2Fwebp"/>
+        Dragon 
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/9ce06020-943c-456f-8922-88a2231c6b50/dark.webp?content-type=image%2Fwebp"/>
+        Dark
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/6c8692c0-6008-40dd-a0f3-2a3ce46ba021/ground.webp?content-type=image%2Fwebp"/>
         Ground
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/58308165-d1bb-441c-bc23-33532b3ecb36/fire.webp?content-type=image%2Fwebp"/>
         Fire
-        <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eb55374e-bd4d-417a-b254-2eff0044e375/neutral.webp?content-type=image%2Fwebp"/>
-        Neutral</div>
-      <div><b>Counter Skills:</b> Meteorain (Adds), Holy Burst, Absolute Frost, Curtain Splash, Beam Slicer, Hydro Slicer, Blast Cannon, Rockburst, Air Blade, Thalassonic Laser, Trigger Happy, Lightning Streak</div>
-      <div><b>Counter Pals:</b> Neptilius, Bastigor, Orserk, Azurobe, Silvegis</div>
-      <div><b>Strategy:</b> Between attacks, charges current target and deals damage on impact. At 70% HP it calls Xenovaders (Dark Pal) for aid. At 45% HP it calls Xenovaders (Dark Pal) and Xenogard (Dragon Pal) for aid. When it reaches 30% HP, it calls a LOT of Xenovaders and Xenogards for aid.
-    </td>
-  </tr>
-  <tr data-raid="moonlord">
-    <td rowspan="2"><img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/1b59726a-ba71-49a8-b4ff-80c3dbf76f2c/moonlord.png?content-type=image%2Fpng" width="50" height="50">
-      </td>
-    <td>Moon Lord</td>
-    <td>50</td>
-    <td>None</td>
-    <td>422,500</td>
-    <td>100%</td>
-    <td>0%</td>
-  </tr>
-  <tr data-raid-info="moonlord">
-    <td colspan="7">
-      <div><b>Attack Type:</b> Non Elemental</div>
-      <div><b>Counter Skills:</b> Dark Whisp, Beam Slicer, Hydro Slicer</div>
-      <div><b>Counter Pals:</b> Frostallion Noct, Necromus, Neptilius, Xenolord, Bellanoir Libero</div>
-      <div><b>Strategy:</b> It cannot move and always turns to target players in base radius. As long as the player is in the base, the eye casts a strong laser aimed at players, which can be dodged by rolling or flying upwards using a mount. If no players are in the base, the laser will be aimed at your pals. It is immune to ground-based pal moves and can only be hurt on its hands and head eye. Killing the hands and forehead releases True Eyes of Cthulhu which have their own powerful attacks. After hands and forehead are dead, the chest (heart) opens up. Killing the heart defeats the boss.
-    </td>
-  </tr>
-  <tr data-raid="moonlord_master">
-    <td rowspan="2">
-      <img src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/1b59726a-ba71-49a8-b4ff-80c3dbf76f2c/moonlord.png?content-type=image%2Fpng" width="50" height="50">
-    </td>
-    <td>Moon Lord Master</td>
-    <td>65</td>
-    <td>None</td>
-    <td>900,000</td>
-    <td>700%</td>
-    <td>10%</td>
-  </tr>
-  <tr data-raid-info="moonlord_master">
-    <td colspan="7">
-      <div><b>Attack Type:</b> Non Elemental</div>
-      <div><b>Counter Skills:</b> Dark Whisp, Beam Slicer, Hydro Slicer</div>
-      <div><b>Counter Pals:</b> Frostallion Noct, Necromus, Neptilius, Xenolord, Bellanoir Libero</div>
-    <div><b>Strategy:</b> It cannot move and always turns to target players in base radius. As long as the player is in the base, the eye casts a strong laser aimed at players, which can be dodged by rolling or flying upwards using a mount. If no players are in the base, the laser will be aimed at your pals. It is immune to ground-based pal moves and can only be hurt on its hands and head eye. Killing the hands and forehead releases True Eyes of Cthulhu which have their own powerful attacks. After hands and forehead are dead, the chest (heart) opens up. Killing the heart defeats the boss.
-    </td>
-  </tr>
-</table>
-
-</body>
-</html>
-
-
-
-
+        <img data-raid-type-icon src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/eb55374e-bd4d-417a-b254-2eff0044e375/neutral.webp?content-type=image%2Fwebp"/>
+        Neutral
+      </div>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Meteorain (Adds)</li>
+          <li>Holy Burst</li>
+          <li>Absolute Frost</li>
+          <li>Curtain Splash</li>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+          <li>Blast Cannon</li>
+          <li>Rockburst</li>
+          <li>Air Blade</li>
+          <li>Thalassonic Laser</li>
+          <li>Trigger Happy</li>
+          <li>Lightning Streak</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Neptilius</li>
+          <li>Bastigor</li>
+          <li>Orserk</li>
+          <li>Azurobe</li>
+          <li>Silvegis</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="moonlord">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/1b59726a-ba71-49a8-b4ff-80c3dbf76f2c/moonlord.png?content-type=image%2Fpng" width="50" height="50">
+    <h4 data-raid-name="Moon Lord">Moon Lord</h4>
+    <ul data-raid-type="none">
+      None
+    </ul>
+    <div data-raid-level="60">50</div>
+    <div data-raid-stats>
+      <div data-raid-hp="422500" title="HP">422,500</div>
+      <div data-raid-damage-increase="1" title="Damage increase">100%</div>
+      <div data-raid-damage-reduction="0" title="Damage reduction">0%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>It cannot move and always turns to target players in base radius. </p>
+        <p>As long as the player is in the base, the eye casts a strong laser aimed at players, which can be dodged by rolling or flying upwards using a mount. </p>
+        <p>If no players are in the base, the laser will be aimed at your pals. It is immune to ground-based pal moves and can only be hurt on its hands and head eye. </p>
+        <p>Killing the hands and forehead releases True Eyes of Cthulhu which have their own powerful attacks. After hands and forehead are dead, the chest (heart) opens up. </p>
+        <p>Killing the heart defeats the boss.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5>
+        Non Elemental
+      </div>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Dark Whisp</li>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Frostallion Noct</li>
+          <li>Necromus</li>
+          <li>Neptilius</li>
+          <li>Xenolord</li>
+          <li>Bellanoir Libero</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+  <li data-raid="moonlord_master">
+    <img data-raid-image src="https://images.squarespace-cdn.com/content/68bd6b47bbd3f202164db779/1b59726a-ba71-49a8-b4ff-80c3dbf76f2c/moonlord.png?content-type=image%2Fpng" width="50" height="50">
+    <h4 data-raid-name="Moon Lord [Master]">Moon Lord [Master]</h4>
+    <ul data-raid-type="none">
+      None
+    </ul>
+    <div data-raid-level="65">65</div>
+    <div data-raid-stats>
+      <div data-raid-hp="900000" title="HP">900,000</div>
+      <div data-raid-damage-increase="7" title="Damage increase">700%</div>
+      <div data-raid-damage-reduction="0.1" title="Damage reduction">10%</div>
+    </div>
+    <details data-raid-info>
+      <summary>Additional information</summary>
+      <div>
+        <h5>Strategy</h5> 
+        <p>It cannot move and always turns to target players in base radius. As long as the player is in the base, the eye casts a strong laser aimed at players, which can be dodged by rolling or flying upwards using a mount. </p>
+        <p>If no players are in the base, the laser will be aimed at your pals. It is immune to ground-based pal moves and can only be hurt on its hands and head eye. </p>
+        <p>Killing the hands and forehead releases True Eyes of Cthulhu which have their own powerful attacks. After hands and forehead are dead, the chest (heart) opens up. </p>
+        <p>Killing the heart defeats the boss.</p>
+      </div>
+      <div>
+        <h5>Attack Type</h5>
+        Non Elemental
+      </div>
+      <div>
+        <h5>Counter Skills</h5>
+        <ul>
+          <li>Dark Whisp</li>
+          <li>Beam Slicer</li>
+          <li>Hydro Slicer</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Counter Pals</h5>
+        <ul>
+          <li>Frostallion Noct</li>
+          <li>Necromus</li>
+          <li>Neptilius</li>
+          <li>Xenolord</li>
+          <li>Bellanoir Libero</li>
+        </ul>
+      </div>
+    </details>
+  </li>
+</ul>
