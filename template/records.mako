@@ -158,7 +158,7 @@ table {
         <tr>                         
             <th data-player>Player</th>
             <th data-game-version>Version</th>
-            <th data-raid>Raid</th>
+            <th data-raid>Boss</th>
             <th data-pals>Pals</th>
             <th data-strategy>Strategy type</th>
             <th data-timer>Timer</th>
