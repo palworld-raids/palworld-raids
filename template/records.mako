@@ -172,7 +172,7 @@ table {
     <tr>
         <td data-player>${record['player']}</td>
         <td data-game-version>${record['game_version']}</td>
-        <td data-raid><a href="${record['video_link']}" target="_blank" noreferrer/>${record['raid']}</a></td>
+        <td data-raid><a href="${record['video_link']}" target="_blank" noreferrer>${record['raid']}</a></td>
         <td data-pals>${record['pals']}</td>
         <td data-strategy>
             % for uses in record['strategy']:
@@ -196,8 +196,21 @@ table {
 <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
-<script>
-let table = new DataTable('#myTable', {
-    // options
-});
-</script>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.6.0/css/dataTables.dateTime.min.css"/>
+<script src="https://cdn.datatables.net/datetime/1.6.0/js/dataTables.dateTime.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.6.0/css/rowGroup.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/rowgroup/1.6.0/js/dataTables.rowGroup.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.8.4/css/searchBuilder.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/searchbuilder/1.8.4/js/dataTables.searchBuilder.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.3.5/css/searchPanes.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/searchpanes/2.3.5/js/dataTables.searchPanes.min.js"></script>
+
+<script>${script_content}</script>

@@ -12,6 +12,7 @@ logger = logging.getLogger()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--template", default="template/records.mako", type=pathlib.Path)
+parser.add_argument("-s", "--script", default="template/static/script.js", type=pathlib.Path)
 parser.add_argument("-o", "--output", default="records.html", type=pathlib.Path)
 parser.add_argument("-d", "--data", default=None)
 
@@ -43,11 +44,11 @@ async def main():
                 'game_version': row_data[9],
             })
     
-
+    
     template_lookup = TemplateLookup(directories=['template'])
 
     template = Template(args.template.read_text(), lookup=template_lookup)
-    rendered = template.render(records=data, publish_date=datetime.now().isoformat())
+    rendered = template.render(records=data, publish_date=datetime.now().isoformat(), script_content=args.script.read_text())
     args.output.write_text(rendered)
 
 if __name__ == "__main__":
