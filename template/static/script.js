@@ -25,9 +25,7 @@ function createOptionFilter(data) {
 }
 function optionFilterInit(that, fn, preDefined = null) {
   var el = createOptionFilter(filterDataValues.strats)
-  el.addEventListener('input', function () {
-    fn(that, this);
-  });
+  el.addEventListener('input', () => fn(that, this));
   el.value = ''
   return el;
 }
@@ -72,7 +70,7 @@ let table = new DataTable('#myTable', {
                             isInputValid: function (el, that) { return el[0].value.length !== 0; },
                             search: function (value, comparison) { return value.includes(comparison) }
                         },
-                        DoesNotContain: {
+                        doesNotContain: {
                             conditionName: 'Does not contain', // String value that will be displayed in the condition select element
                             init: optionFilterInit,
                             inputValue: function (el) { return el[0].value; },
@@ -81,19 +79,29 @@ let table = new DataTable('#myTable', {
                         },
                         is: {
                           conditionName: 'is', // String value that will be displayed in the condition select element
-                          init: function optionFilterInit(that, fn, preDefined = null) {
-                            var el = document.createElement('select')
-                            data.forEach(strat => {
-                              const stratOption = document.createElement('option')
-                              stratOption.value = strat
-                              stratOption.text = strat
-                              el.appendChild(stratOption)
-                            })
+                          init: function (that, fn, preDefined = null) {
+                            var el = document.createElement('select');
+                            ["Empty", "Not empty"].forEach(value => {
+                              const filterOption = document.createElement('option')
+                              filterOption.value = value
+                              filterOption.text = value
+                              el.appendChild(filterOption)
+                            });
+                            el.value = '';
+                            el.addEventListener('input', () => fn(that, this));
                             return el
                           },
-                          inputValue: function (el) { return el[0].value; },
-                          isInputValid: function (el, that) { return el[0].value.length !== 0; },
-                          search: function (value, comparison) { return !!value.length }
+                          inputValue: function (el) { 
+                            console.log(el[0].value)
+                            return el[0].value; 
+                          },
+                          isInputValid: function (el, that) { 
+                            console.log(el[0].value, that)
+                            return el[0].value.length !== 0; 
+                          },
+                          search: function (value, comparison) { 
+                            console.log("Comparing ", value, comparison)
+                            return comparison.includes('Empty') ? !value.length : comparison.includes('Not empty') ? !!value.length : true }
                         }
                     }
                 }
