@@ -28,7 +28,7 @@ jobs:
         env:
           DATA: ${{ secrets.DATA }}
         run: |
-          python main.py -t template/records.mako -o records.html
+          python main.py -t "template/data.js.mako" -o "script-insert.js"
       - name: Commit and push if changed
         run: |
           git diff
