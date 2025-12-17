@@ -11,6 +11,8 @@ const filterDataValues = {
     "Xenolord Ultra",
     "Moon Lord",
     "Moon Lord Master",
+    "Hartalis",
+    "Hartalis Ultra",
   ],
   towerList: [
     "Zoe & Grizzbolt (Hard)",
