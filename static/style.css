@@ -1,0 +1,175 @@
+.dt-container { container-type: inline-size; }
+
+dialog#filter-dialog {
+  max-width: 90dvw;
+  width: fit-content;
+  max-height: 90dvh;
+  box-sizing: border-box;
+  overflow-x: auto;
+  margin: auto;
+  ::backdrop {}
+}
+[data-filter] {
+  button {
+    display: flex;
+    gap: .5em; 
+    align-items: center;
+    padding-inline-start: 0;
+    padding-block: 0;
+    img { max-height: 24px; }
+  }
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+
+  td, th {
+    padding: 8px;
+    @container (width < 748px) { 
+      text-align: left !important;
+      &:before { 
+        font-weight: 700; 
+      } 
+    }
+  }
+  
+  tr:nth-child(even) {
+    background-color: #1112;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  .records--player {
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        grid-area: player;
+        &:before { content: 'Player: ' }
+      }
+    }
+  }
+  .records--game-version {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: game-version;
+        &:before { content: 'Version: ' }
+      }
+    }
+  }
+  .records--raid {
+    &:is(th) {}
+    &:is(td) {
+      a { text-decoration: underline #FFFFFF; }
+      img {
+        aspect-ratio: 1;
+        width: 1.2em;
+        vertical-align: bottom;
+      }
+      @container (width < 748px) {
+        grid-area: raid;
+        &:before { content: 'Raid: ' }
+      }
+    }
+  }
+  .records--pals {
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        grid-area: pals;
+        &:before { content: 'Pals: ' }
+      }
+    }
+  }
+  .records--strategy {
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        grid-area: strategy;
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        align-items: center;
+        &:before { content: 'Strategy: ' }
+      }
+      span {
+        border-radius: 12px;
+        border: 1px solid #495057;
+        background-color: #495057AA;
+        padding: 0.25em 0.5em;
+        white-space: nowrap;
+      }
+    }
+  }
+  .records--timer {
+    text-align: center !important;
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: timer;
+        &:before { content: 'Timer: ' }
+      }
+    }
+  }
+  .records--submit-date {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: submit-date;
+        &:before { content: 'Submit date: ' }
+      }
+    }
+  }
+  .records--review-date {
+    text-align: right !important;
+    &:is(th) {}
+    &:is(td) {
+      @container (width < 748px) {
+        text-align: left !important;
+        grid-area: review-date;
+        &:before { content: 'Review date: ' }
+      }
+    }
+  }
+
+  tfoot {
+    font-size: 0.6em;
+    color: #8888;
+    td { text-align: right !important; }
+  }
+
+  @container (width < 748px) { 
+    &, tbody, td {
+      display: block; 
+    }
+    td {
+      padding: 0.125em 0.5em;
+    }
+    tbody tr {
+      background-color: #1112;
+      border: 1px solid white;
+      display: grid;
+      margin-block: 1.5em;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas: 
+        "player player raid raid"
+        "pals pals timer timer"
+        "strategy strategy strategy strategy"
+        "game-version game-version game-version game-version"
+        "submit-date submit-date review-date review-date" 
+      ;
+    }
+    thead, th { 
+      display: none; 
+    }
+  }
+}

@@ -12,7 +12,7 @@ logger = logging.getLogger()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--template", default="template/records.mako", type=pathlib.Path)
-parser.add_argument("-s", "--script", default="template/static/script.js", type=pathlib.Path)
+parser.add_argument("-s", "--script", default="static/script.js", type=pathlib.Path)
 parser.add_argument("-o", "--output", default="records.html", type=pathlib.Path)
 parser.add_argument("-d", "--data", default=None)
 
@@ -29,8 +29,9 @@ async def main():
     rows = res.text.split("\r\n")
     for row in rows: 
         row_data = row.split("\t")
+        filter = row_data[8] and row_data[7] and row_data[5]
         i += 1
-        if i > 1: 
+        if i > 1 and filter: 
             data.append({
                 'player': row_data[0],
                 'raid': row_data[1],
