@@ -11,9 +11,9 @@ from datetime import datetime
 logger = logging.getLogger()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--template", default="template/records.mako", type=pathlib.Path)
+parser.add_argument("-t", "--template", default="template/data.js.mako", type=pathlib.Path)
 parser.add_argument("-s", "--script", default="static/script.js", type=pathlib.Path)
-parser.add_argument("-o", "--output", default="records.html", type=pathlib.Path)
+parser.add_argument("-o", "--output", default="script-insert.js", type=pathlib.Path)
 parser.add_argument("-d", "--data", default=None)
 
 
